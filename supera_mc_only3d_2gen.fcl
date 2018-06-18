@@ -3,8 +3,8 @@ ProcessDriver: {
   Verbosity:    2
   EnableFilter: false
   RandomAccess: false
-  ProcessType:  ["SuperaMetaMaker","SuperaMCParticle","SuperaKeyPointCluster","SuperaKeyPointCluster","SuperaMCPCluster","SuperaMCTruth"]
-  ProcessName:  ["SuperaMetaMaker","SuperaMCParticle","PrimaryKeyPointCluster","SecondaryKeyPointCluster","SuperaMCPCluster","SuperaMCTruth"]
+  ProcessType:  ["SuperaMetaMaker","SuperaMCParticle","SuperaKeyPointCluster","SuperaKeyPointCluster","SuperaMCPCluster","SuperaMCTruth","SuperaMCTruth"]
+  ProcessName:  ["SuperaMetaMaker","SuperaMCParticle","PrimaryKeyPointCluster","SecondaryKeyPointCluster","SuperaMCPCluster","SuperaMCTruth","SuperaMCTruth2"]
 
   IOManager: {
     Verbosity:   2
@@ -23,7 +23,7 @@ ProcessDriver: {
       LArMCTruthProducer: "generator"
       Voxel3DSlicer: {
         Verbosity: 2
-        Origin: 0
+        Origin: 1
         GridSize:      [0.3,0.3,0.3]
         WidthArray:    [230.4,230.4,230.4]
         MinCoordinate: [0.,-116.5,0.]
@@ -118,6 +118,11 @@ ProcessDriver: {
     SuperaMCTruth: {
       LArMCTruthProducer: "generator"
       OutParticleLabel: "mctruth"
+      Origin: 0
+    }
+    SuperaMCTruth2: {
+      LArMCTruthProducer: "rain"
+      OutParticleLabel:   "rain"
       Origin: 0
     }
     SuperaMCPCluster: {
