@@ -30,6 +30,7 @@ namespace larcv {
   {
     SuperaBase::process(mgr);
 
+//Generate Meta
     if(supera::PulledPork3DSlicer::Is(supera::ImageMetaMaker::MetaMakerPtr())) {
       auto ptr = (supera::PulledPork3DSlicer*)(supera::ImageMetaMaker::MetaMakerPtr());
       ptr->ClearEventData();
@@ -76,4 +77,6 @@ namespace larcv {
 
 
 }
+
+
 #endif

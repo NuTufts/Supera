@@ -1,36 +1,43 @@
 /**
- * \file WireMask.h
+ * \file SuperaInfill.h
  *
  * \ingroup Package_Name
  * 
- * \brief Class def header for a class WireMask
+ * \brief Class def header for a class SuperaInfill
  *
- * @author kazuhiro
+ * @author kmason
  */
 
 /** \addtogroup Package_Name
 
     @{*/
-#ifndef __WIREMASK_H__
-#define __WIREMASK_H__
+#ifndef __SUPERAINFILL_H__
+#define __SUPERAINFILL_H__
 
 #include "larcv/core/Processor/ProcessBase.h"
 #include "larcv/core/Processor/ProcessFactory.h"
+#include "SuperaBase.h"
+#include "ImageMetaMaker.h"
+#include "Instance2Image.h"
+
 namespace larcv {
 
   /**
-     \class WireMask
+     \class SuperaInfill
      This module is used to mask column pixels that correspond to a set of specified wires.\n
   */
-  class WireMask : public ProcessBase {
+  class SuperaInfill : //public ProcessBase,
+    public SuperaBase,
+   // public supera::ParamsImage2D,
+    public supera::ImageMetaMaker {
 
   public:
     
     /// Default constructor
-    WireMask(const std::string name="WireMask");
+    SuperaInfill (const std::string name="SuperaInfill");
     
     /// Default destructor
-    ~WireMask(){}
+    ~SuperaInfill(){}
 
     void configure(const PSet&);
 
@@ -41,7 +48,13 @@ namespace larcv {
     void finalize();
 
   private:
-
+    std::string m_ancestor_label; //instance image
+    std::string m_instance_label; //instance image   
+ 
+    std::string _output_image_label; //test
+    std::string _output_image_label2; //test
+    std::string _output_image_label3; //test
+    
     std::string _image_producer;  ///< Image to mask
     int         _plane_id;        ///< Plane ID (i.e. EventImage2D index number) to mask wires for. <0 means ALL planes
     std::vector<size_t> _wire_v;  ///< A list of wire numbers to be masked
@@ -51,17 +64,17 @@ namespace larcv {
   };
 
   /**
-     \class larcv::WireMaskFactory
+     \class larcv::SuperaInfillFactory
      \brief A concrete factory class for larcv::WireMask
   */
-  class WireMaskProcessFactory : public ProcessFactoryBase {
+  class SuperaInfillProcessFactory : public ProcessFactoryBase {
   public:
     /// ctor
-    WireMaskProcessFactory() { ProcessFactory::get().add_factory("WireMask",this); }
+    SuperaInfillProcessFactory() { ProcessFactory::get().add_factory("SuperaInfill",this); }
     /// dtor
-    ~WireMaskProcessFactory() {}
+    ~SuperaInfillProcessFactory() {}
     /// creation method
-    ProcessBase* create(const std::string instance_name) { return new WireMask(instance_name); }
+    ProcessBase* create(const std::string instance_name) { return new SuperaInfill(instance_name); }
   };
 
 }
