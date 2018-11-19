@@ -27,12 +27,15 @@ namespace larcv {
     _wire_v.clear();
     _wire_v = cfg.get<std::vector<size_t> >("WireList",_wire_v);
     _image_producer = cfg.get<std::string>("ImageProducer");
-    _output_image_label = cfg.get<std::string>("OutputImageLabel");
-    _output_image_label2 = cfg.get<std::string>("OutputImageLabel2");
-    _output_image_label3 = cfg.get<std::string>("OutputImageLabel3");
+
+    _output_adc = cfg.get<std::string>("OutputADCLabel");
+    _output_labelsbasic = cfg.get<std::string>("OutputLabelsBasicLabel");
+    _output_adcmasked = cfg.get<std::string>("OutputADCMaskedLabel");
+    _output_labels = cfg.get<std::string>("OutputLabelsLabel");
+    _adcthreshold = cfg.get<int>("ADCLabelThreshold");   
+
     _chstatus_producer = cfg.get<std::string>("ChStatusProducer","");
     _plane_id = cfg.get<int>("PlaneID",-1);
-    _mask_val = cfg.get<float>("MaskValue",0);
     _threshold = (chstatus::ChannelStatus_t)(cfg.get<unsigned short>("ChStatusThreshold",chstatus::kGOOD));
     m_ancestor_label = cfg.get<std::string>("AncestorImageLabel");
     m_instance_label = cfg.get<std::string>("InstanceImageLabel");
@@ -82,48 +85,45 @@ namespace larcv {
 	throw larbys();
       }
     }
-    //Import Instance
-    const EventImage2D* ev_instance = (EventImage2D*)(mgr.get_data("image2d",m_instance_label));
-    if(!ev_instance) {
-      LARCV_CRITICAL() << "ev_instance image could not be created!" << std::endl;
-      throw larbys();
-    }
-    const std::vector<larcv::Image2D>& instance_v = ev_instance->image2d_array();
 
     //Make a copy and save it so I have an image with ADC values
-    auto input_ADC_image = (EventImage2D*)(mgr.get_data("image2d",_output_image_label));
+    auto input_ADC_image = (EventImage2D*)(mgr.get_data("image2d",_output_adc));
     std::vector<Image2D> ADC_image_v = ev_wire->image2d_array();
-  
  
     // Make a second copy to store labels
-    auto input_label_image = (EventImage2D*)(mgr.get_data("image2d",_output_image_label2));
+    // 1 = dead wires
+    // 0 = not dead wires
+    auto input_labelbasic_image = (EventImage2D*)(mgr.get_data("image2d",_output_labelsbasic));
     std::vector<Image2D> wire_image_v = ev_wire->image2d_array();
-    std::vector<larcv::Image2D> image_label_v = {wire_image_v[0].meta() , wire_image_v[1].meta() , wire_image_v[2].meta()};
+    std::vector<larcv::Image2D> image_labelbasic_v = {wire_image_v[0].meta() , wire_image_v[1].meta() , wire_image_v[2].meta()};
+ 
+    //Make a third copy - ADC vales w/ dead channels included
+    auto input_ADCMasked_image = (EventImage2D*)(mgr.get_data("image2d",_output_adcmasked));
+    std::vector<larcv::Image2D> image_adcmasked_v = ADC_image_v;
 
-    //Make a third copy for weighted labels
-    /*auto input_weighted_image = (EventImage2D*)(mgr.get_data("image2d",_output_image_label3));
-    std::vector<larcv::Image2D> image_weighted_v = {wire_image_v[0].meta() , wire_image_v[1].meta() , wire_image_v[2].meta()};*/
+    //make a fourth copy - labeled for weights
+    //0 = background
+    //1 = adc above threshold 10
+    //2 = adc >0 but below threshold
+    //3 = adc = 0 but within 2 pixels (horizontally) of a pixel with adc>0
+    auto input_label_image = (EventImage2D*)(mgr.get_data("image2d",_output_labels));
 
-    //In order to label, (and weighted label), first set all pixels in image to zero
+    //In order to label, first set all pixels in image to zero
     for(int plane =0; plane<3; plane++)
       {
-        image_label_v[plane].paint(0);
-       // image_weighted_v[plane].paint(0);
+        image_labelbasic_v[plane].paint(0);
       }
+    std::vector<larcv::Image2D> image_label_v = image_labelbasic_v;
     
     // make sure plane id input is valid
-    if(_plane_id >=0 && (int)(image_label_v.size()) <= _plane_id) {
-      LARCV_CRITICAL() << "Could not find plane: " << _plane_id << ". image_v.size(): " << image_label_v.size() << std::endl;
+    if(_plane_id >=0 && (int)(image_labelbasic_v.size()) <= _plane_id) {
+      LARCV_CRITICAL() << "Could not find plane: " << _plane_id << ". image_v.size(): " << image_labelbasic_v.size() << std::endl;
       throw larbys();
     }  
-    //intialize a pixel count for weighting images
-    /*int NCharge = 0;
-    int NEmpty = 0;
-    int TotalPixels = 0;*/
-    
-    //loop that: sets holes to zero for labels and fills with instance image for ADC
+   
+    //loop that: sets dead channels to one for labels and zero for the masked adc image
     //loop through planes
-    for(int plane=0; plane<(int)(image_label_v.size()); plane++) {
+    for(int plane=0; plane<(int)(image_labelbasic_v.size()); plane++) {
 
       // construct wire numbers to mask
       std::set<size_t> wire_s;
@@ -134,63 +134,87 @@ namespace larcv {
 	  if(status_v[w] < _threshold) wire_s.insert(w);
          }
        }
-     //create an image for labels
-     auto& img_label = image_label_v.at(plane);
-     auto const& meta_label = img_label.meta();
-     std::vector<float> empty_column(img_label.meta().rows(),1);
-      
-     // Loop over wires, find target column and erase
+
+     //create an image for basic labels
+     auto& img_labelbasic = image_labelbasic_v.at(plane);
+     auto const& meta_labelbasic = img_labelbasic.meta();
+     std::vector<float> empty_column(img_labelbasic.meta().rows(),1);
+     //create an image for masked ADC
+     auto& img_mask = image_adcmasked_v.at(plane);
+     std::vector<float> empty_column_masked(img_labelbasic.meta().rows(),0);
+
+     // Loop over wires, set dead channels in labels to one 
      for(auto const& ch : wire_s) {
-	if(ch < meta_label.min_x() || ch >= meta_label.max_x()) continue;
-        auto col = meta_label.col((double)ch);
+	if(ch < meta_labelbasic.min_x() || ch >= meta_labelbasic.max_x()) continue;
+        auto col = meta_labelbasic.col((double)ch);
         //set columns in label image to one
-        img_label.copy(1,col,empty_column); 
-        //find number of rows and loop over rows
-        size_t rows = ADC_image_v[plane].meta().rows();
-        for (unsigned int r=0; r<rows; r++){
-           //TotalPixels++;
-           //if instance >=0 (background values are negative), set to 1. else set to zero
-           int pix_id = static_cast<int>(instance_v[plane].pixel(r,col));
-           if (pix_id >= 0){
-               ADC_image_v[plane].set_pixel(r,col,1);
-               //NCharge++;
-           }
-           //else NEmpty++;
-         }
+        img_labelbasic.copy(1,col,empty_column);
+	// set columns in adcmasked image to zero
+	img_mask.copy(1, col, empty_column_masked); 
       }
-      //std::cout << "Number of Charged pixels in plane " << plane << " is " << NCharge << std::endl;
-      //std::cout << "Number of empty pixels in plane " << plane << " is " << NEmpty << std::endl;
-      //std::cout << "Number of total pixels in plane " << plane << " is " << TotalPixels << std::endl;
- 
-    // Now that I have all of these totals, I need another for loop to set the masked images (in the same plane still)
-      /*for(auto const& w : _wire_v) wire_s.insert(w);
-      if(ev_chstatus) {
-        auto const& status_v = ev_chstatus->status(plane).as_vector();
-        for(size_t w=0; w<status_v.size(); ++w) {
-          if(status_v[w] < _threshold) wire_s.insert(w);
-         }
-       }
-      for(auto const& ch : wire_s) {
-        if(ch < image_weighted_v[plane].meta().min_x() || ch >= image_weighted_v[plane].meta().max_x()) continue;
-        auto col = image_weighted_v[plane].meta().col((double)ch);
-        size_t rows = image_weighted_v[plane].meta().rows();
+      
+      //loop over each pixel for label image
+      size_t rows = ADC_image_v[plane].meta().rows();
+      size_t cols = ADC_image_v[plane].meta().cols();
+
+      for (unsigned int c = 0; c<cols; c++){
         for (unsigned int r=0; r<rows; r++){
-           int pix_id = static_cast<int>(instance_v[plane].pixel(r,col));
-           if (pix_id >= 0){
-               image_weighted_v[plane].set_pixel(r,col,1.0/NCharge);
-           }
-           else image_weighted_v[plane].set_pixel(r,col, 1.0/NEmpty);
-         }
+          int pix_id = static_cast<int>(ADC_image_v[plane].pixel(r,c));
+          // 1: greater than threshold
+          if (pix_id >= _adcthreshold){
+             image_label_v[plane].set_pixel(r, c, 1);
+          }
+
+          // 2: greater than zero, less than threshold
+          else if (pix_id > 0){
+             image_label_v[plane].set_pixel(r, c , 2);
+          }
+
+          // 3: zero, but within 2 pixels in time from a non-zero pixel
+          // lots of conditions to avoid seg faults on borders
+         else if (( r >= 2) && (r < (rows - 2))){
+             if ( (ADC_image_v[plane].pixel(r-1,c) > 0)
+                  || (ADC_image_v[plane].pixel(r-2,c) > 0) 
+                  || (ADC_image_v[plane].pixel(r+1,c) > 0) 
+                  || (ADC_image_v[plane].pixel(r+2,c) > 0)){
+                image_label_v[plane].set_pixel(r, c , 3);
+             }
+          }
+          else if (r == 1){
+             if ( (ADC_image_v[plane].pixel(r-1,c) > 0)
+                  || (ADC_image_v[plane].pixel(r+1,c) > 0)
+                  || (ADC_image_v[plane].pixel(r+2,c) > 0)){
+                image_label_v[plane].set_pixel(r, c , 3);
+             }
+          }
+          else if (r == 0){
+             if ( (ADC_image_v[plane].pixel(r+1,c) > 0)
+                  || (ADC_image_v[plane].pixel(r+2,c) > 0)){
+                image_label_v[plane].set_pixel(r, c , 3);
+             }
+          }
+          else if (r == rows -2){
+             if ( (ADC_image_v[plane].pixel(r-1,c) > 0)
+                  || (ADC_image_v[plane].pixel(r-2,c) > 0)
+                  || (ADC_image_v[plane].pixel(r+1,c) > 0)){
+                image_label_v[plane].set_pixel(r, c , 3);
+             }
+          }
+          else if (r == rows - 1){
+             if ( (ADC_image_v[plane].pixel(r-1,c) > 0)
+                  || (ADC_image_v[plane].pixel(r-2,c) > 0)){
+                image_label_v[plane].set_pixel(r, c , 3);
+             }  
+          }
+        }
       }
-     NCharge = 0;
-     NEmpty = 0;
-     TotalPixels  = 0;*/
     }   
     
     // put back images
-    //input_weighted_image->emplace(std::move(image_weighted_v));
+    input_labelbasic_image->emplace(std::move(image_labelbasic_v));
     input_label_image->emplace(std::move(image_label_v));
     input_ADC_image->emplace(std::move(ADC_image_v));
+    input_ADCMasked_image->emplace(std::move(image_adcmasked_v));
     return true;
   }
 

@@ -51,14 +51,16 @@ namespace larcv {
     std::string m_ancestor_label; //instance image
     std::string m_instance_label; //instance image   
  
-    std::string _output_image_label; //test
-    std::string _output_image_label2; //test
-    std::string _output_image_label3; //test
+    std::string _output_adc; //ADC output
+    std::string _output_labelsbasic; //labels output
+    std::string _output_adcmasked; //ADC masked output
+    std::string _output_labels; //labels of ADC values output
+    int         _adcthreshold; //threshold for labeling ADC values 
     
     std::string _image_producer;  ///< Image to mask
     int         _plane_id;        ///< Plane ID (i.e. EventImage2D index number) to mask wires for. <0 means ALL planes
     std::vector<size_t> _wire_v;  ///< A list of wire numbers to be masked
-    float       _mask_val;        ///< Value to be used for masking (default 0)
+    //float       _mask_val;        ///< Value to be used for masking (default 0)
     std::string _chstatus_producer; ///< ChStatus producer name (if using ChStatus to mask)
     chstatus::ChannelStatus_t _threshold;     ///< Threshold status for ChStatus
   };

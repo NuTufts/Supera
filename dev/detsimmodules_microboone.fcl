@@ -1,0 +1,40 @@
+#include "detsimmodules.fcl"
+
+BEGIN_PROLOG
+
+microboone_simwire:  
+{ 
+ module_type:         "SimWireMicroBooNE"
+ TrigModName:         "triggersim"
+ DriftEModuleLabel:   "largeant"
+ NoiseWidth:          62.4        #Exponential Noise width (kHz)
+ NoiseRand:           0.1         #frac of randomness of noise freq-spec
+ LowCutoff:           7.5         #Low frequency filter cutoff (kHz)
+ CompressionType:     "none"      #could also be none	
+ SimDeadChannels:     false	
+ 
+ GenNoise:            3       # 0 = no noise, 1 = time domain, 2 = freq. domain, 3 = data driven post-filter noise spectrum
+ GetNoiseFromHisto:   false     #generate noise from histogram of freq-distribution
+ NoiseFileFname:      "uboone_noise_v0.1.root"
+ NoiseHistoName:      "NoiseFreq"  
+
+# Expert settings
+ Test:                false       #turns on special test case: parameters below               
+ TestWire:            1200
+ TestIndex:           [6400]
+ TestCharge:          [20000] 
+ Sample:              -1           # no test: 0-3 generates test output
+
+ MakeNoiseDists:      true
+}
+#microboone_simwireana: @local::standard_simwireana
+microboone_simwireana:
+{
+    module_type: "SimWireMicroBooNEAna"
+    DigitModuleLabel: "daq"
+
+}
+
+microboone_wienerfilterana: @local::standard_wienerfilterana
+
+END_PROLOG

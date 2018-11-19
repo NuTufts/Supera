@@ -1,0 +1,4984 @@
+ProcessDriver: {
+   EnableFilter: false
+   IOManager: {
+      IOMode: 1
+      InputDirs: []
+      InputFiles: []
+      Name: "IOManager"
+      OutFileName: "out_test.root"
+      StoreOnlyName: []
+      StoreOnlyType: []
+      Verbosity: 2
+   }
+   ProcessList: {
+      SuperaChStatus: {
+         LArChStatusProducer: "chstatus"
+         OutChStatusLabel: "wire"
+      }
+      SuperaInfill: {
+         AncestorImageLabel: "ancestor"
+         ChStatusProducer: "wire"
+         ImageProducer: "wire"
+         InstanceImageLabel: "instance"
+         OutputImageLabel: "ADC"
+         OutputImageLabel2: "Labels"
+         Verbosity: 2
+      }
+      SuperaInstanceImage: {
+         AncestorImageLabel: "ancestor"
+         ChStatusProducer: "wire"
+         LArMCShowerProducer: "mcreco"
+         LArMCTrackProducer: "mcreco"
+         LArMCTruthProducer: "generator"
+         LArSimChProducer: "largeant"
+         Origin: 0
+         OutImageLabel: "instance"
+         OutROILabel: "segment"
+         TimeOffset: 2400
+         Verbosity: 2
+      }
+      SuperaMetaMaker: {
+         MetaConfig: {
+            EventCompCols: [
+               1,
+               1,
+               1
+            ]
+            EventCompRows: [
+               6,
+               6,
+               6
+            ]
+            EventImageCols: [
+               3456,
+               3456,
+               3456
+            ]
+            EventImageRows: [
+               1008,
+               1008,
+               1008
+            ]
+            MinTime: 2400
+            MinWire: 0
+         }
+      }
+      SuperaWire: {
+         LArWireProducer: "caldata"
+         OutImageLabel: "wire"
+         TimeOffset: 2400
+         Verbosity: 2
+      }
+   }
+   ProcessName: [
+      "SuperaMetaMaker",
+      "SuperaWire",
+      "SuperaChStatus",
+      "SuperaInstanceImage",
+      "SuperaInfill"
+   ]
+   ProcessType: [
+      "SuperaMetaMaker",
+      "SuperaWire",
+      "SuperaChStatus",
+      "SuperaInstanceImage",
+      "SuperaInfill"
+   ]
+   RandomAccess: false
+   Verbosity: 2
+}
+microboone_tfile_metadata: {
+   GenerateTFileMetadata: [
+      true,
+      true,
+      "tru",
+      true,
+      true
+   ]
+   JSONFileName: [
+      "ana_hist.root.json",
+      "larlite_reco2d.root.json",
+      "larlite_opreco.root.json",
+      "larcv.root.json"
+   ]
+   dataTier: [
+      "root-tuple",
+      "larlite",
+      "larlite",
+      "larlite",
+      "larcv"
+   ]
+   fileFormat: [
+      "root",
+      "root",
+      "root",
+      "root",
+      "root"
+   ]
+}
+outputs: {
+   out1: {
+      compressionLevel: 1
+      dataTier: "detector-simulated"
+      fastCloning: false
+      fileName: "%ifb_%tc_detsim.root"
+      module_label: "out1"
+      module_type: "RootOutput"
+      outputCommands: [
+         "keep *_*_*_*",
+         "drop optdata::ChannelDataGroup_*_*_*"
+      ]
+      saveMemoryObjectThreshold: 0
+      streamName: "out1"
+   }
+}
+physics: {
+   analyzers: {
+      mcinfo: {
+         AssLabelToSave: [
+            "generator",
+            "corsika"
+         ]
+         AssociationLookUpMap: {
+            mctruth: [
+               "generator",
+               "corsika"
+            ]
+         }
+         AssociationProducers: []
+         DataLookUpMap: {
+            gtruth: [
+               "generator"
+            ]
+            mcflux: [
+               "generator"
+            ]
+            mcshower: [
+               "mcreco"
+            ]
+            mctrack: [
+               "mcreco"
+            ]
+            mctruth: [
+               "generator",
+               "corsika"
+            ]
+            potsummary: [
+               "generator"
+            ]
+         }
+         ScanAssByProducers: true
+         module_label: "mcinfo"
+         module_type: "LiteScanner"
+         out_filename: "larlite_mcinfo.root"
+         pot_labels: [
+            "generator"
+         ]
+         store_association: true
+         stream: "mcinfo"
+         unique_filename: false
+      }
+      opdigit: {
+         AssociationLookUpMap: {}
+         AssociationProducers: []
+         DataLookUpMap: {
+            opdigit: [
+               "pmtreadout"
+            ]
+            simphotons: [
+               "largeant"
+            ]
+         }
+         ScanAssByProducers: true
+         module_label: "opdigit"
+         module_type: "LiteScanner"
+         out_filename: "larlite_opdigit.root"
+         pot_labels: []
+         store_association: true
+         stream: "opdigit"
+         unique_filename: false
+      }
+      opreco: {
+         AssociationLookUpMap: {
+            opflash: [
+               "simpleFlashBeam",
+               "simpleFlashCosmic",
+               "opfl\nashBeam",
+               "opflashCosmic"
+            ]
+            ophit: [
+               "ophitBeam",
+               "ophitCosmic"
+            ]
+         }
+         AssociationProducers: []
+         DataLookUpMap: {
+            opflash: [
+               "simpleFlashBeam",
+               "simpleFlashCosmic",
+               "opflashBeam\n",
+               "opflashCosmic"
+            ]
+            ophit: [
+               "ophitBeam",
+               "ophitCosmic"
+            ]
+            swtrigger: [
+               "swtrigger"
+            ]
+            trigger: [
+               "triggersim"
+            ]
+         }
+         ScanAssByProducers: true
+         module_label: "opreco"
+         module_type: "LiteScanner"
+         out_filename: "larlite_opreco.root"
+         pot_labels: []
+         store_association: true
+         stream: "opreco"
+         unique_filename: false
+      }
+      reco2d: {
+         AssLabelToSave: [
+            "gaushit"
+         ]
+         AssociationLookUpMap: {
+            cluster: []
+            endpoint2d: []
+            hit: [
+               "gaushit"
+            ]
+            vertex: []
+            wire: [
+               "caldata"
+            ]
+         }
+         AssociationProducers: []
+         DataLookUpMap: {
+            cluster: []
+            endpoint2d: []
+            hit: [
+               "gaushit"
+            ]
+            vertex: []
+         }
+         ScanAssByProducers: true
+         module_label: "reco2d"
+         module_type: "LiteScanner"
+         out_filename: "larlite_reco2d.root"
+         pot_labels: []
+         store_association: true
+         stream: "reco2d"
+         unique_filename: false
+      }
+      simch: {
+         AssociationLookUpMap: {}
+         AssociationProducers: []
+         DataLookUpMap: {
+            simch: [
+               "largeant"
+            ]
+         }
+         ScanAssByProducers: true
+         module_label: "simch"
+         module_type: "LiteScanner"
+         out_filename: "larlite_simch.root"
+         pot_labels: []
+         store_association: true
+         stream: "simch"
+         unique_filename: false
+      }
+      superaCCPi0Data: {
+         CSVSuperaMetaMaker: "ccpi0_constraint.fcl"
+         module_label: "superaCCPi0Data"
+         module_type: "LArSoftSuperaDriver"
+         out_filename: "larcv.root"
+         stream: "mc"
+         supera_params: "supera_basic_focused.fcl"
+         unique_filename: false
+      }
+      superaCCPi0MC: {
+         CSVSuperaMetaMaker: "ccpi0_constraint_mcc8.fcl"
+         module_label: "superaCCPi0MC"
+         module_type: "LArSoftSuperaDriver"
+         out_filename: "larcv.root"
+         stream: "mc"
+         supera_params: "supera_ccpi0_mc_focused.fcl"
+         unique_filename: false
+      }
+      superaFocusedView: {
+         module_label: "superaFocusedView"
+         module_type: "LArSoftSuperaDriver"
+         out_filename: "larcv.root"
+         stream: "mc"
+         supera_params: "supera_segment_focused.fcl"
+         unique_filename: false
+      }
+      superaFocusedView3D: {
+         module_label: "superaFocusedView3D"
+         module_type: "LArSoftSuperaDriver"
+         out_filename: "larcv.root"
+         stream: "mc"
+         supera_params: "supera_segment_pork3d.fcl"
+         unique_filename: false
+      }
+      superaFocusedViewPlus: {
+         module_label: "superaFocusedViewPlus"
+         module_type: "LArSoftSuperaDriver"
+         out_filename: "larcv.root"
+         stream: "mc"
+         supera_params: "supera_segment_focused_plus.fcl"
+         unique_filename: false
+      }
+      superaInfill: {
+         module_label: "superaInfill"
+         module_type: "LArSoftSuperaDriver"
+         out_filename: "larcv.root"
+         stream: "mc"
+         supera_params: "supera_infill.fcl"
+         unique_filename: false
+      }
+      superaMCBasic: {
+         module_label: "superaMCBasic"
+         module_type: "LArSoftSuperaDriver"
+         out_filename: "larcv.root"
+         stream: "mc"
+         supera_params: "supera_basic.fcl"
+         unique_filename: false
+      }
+      superaMCFullSet: {
+         module_label: "superaMCFullSet"
+         module_type: "LArSoftSuperaDriver"
+         out_filename: "larcv.root"
+         stream: "mc"
+         supera_params: "supera_mcset.fcl"
+         unique_filename: false
+      }
+      superaMCInstance: {
+         module_label: "superaMCInstance"
+         module_type: "LArSoftSuperaDriver"
+         out_filename: "larcv.root"
+         stream: "mc"
+         supera_params: "supera_instance.fcl"
+         unique_filename: false
+      }
+      superaMCLArFlow: {
+         module_label: "superaMCLArFlow"
+         module_type: "LArSoftSuperaDriver"
+         out_filename: "larcv.root"
+         stream: "mc"
+         supera_params: "supera_larflow.fcl"
+         unique_filename: false
+      }
+      superaMCTruthOnly: {
+         module_label: "superaMCTruthOnly"
+         module_type: "LArSoftSuperaDriver"
+         out_filename: "larcv.root"
+         stream: "mc"
+         supera_params: "supera_mctruthonly.fcl"
+         unique_filename: false
+      }
+      superaMichelData: {
+         CSVSuperaMetaMaker: "michel_constraint.fcl"
+         module_label: "superaMichelData"
+         module_type: "LArSoftSuperaDriver"
+         out_filename: "larcv.root"
+         stream: "mc"
+         supera_params: "supera_basic_focused.fcl"
+         unique_filename: false
+      }
+      superaMichelMC: {
+         CSVSuperaMetaMaker: "michel_constraint_mcc7.fcl"
+         module_label: "superaMichelMC"
+         module_type: "LArSoftSuperaDriver"
+         out_filename: "larcv.root"
+         stream: "mc"
+         supera_params: "supera_michel_mc_focused.fcl"
+         unique_filename: false
+      }
+      superaWholeView: {
+         module_label: "superaWholeView"
+         module_type: "LArSoftSuperaDriver"
+         out_filename: "larcv.root"
+         stream: "mc"
+         supera_params: "supera_basic.fcl"
+         unique_filename: false
+      }
+      superaWholeViewMC: {
+         module_label: "superaWholeViewMC"
+         module_type: "LArSoftSuperaDriver"
+         out_filename: "larcv.root"
+         stream: "mc"
+         supera_params: "supera_basic.fcl"
+         unique_filename: false
+      }
+      wire: {
+         AssociationLookUpMap: {}
+         AssociationProducers: []
+         DataLookUpMap: {
+            chstatus: [
+               "chstatus"
+            ]
+            wire: [
+               "caldata"
+            ]
+         }
+         RawDigit4ChStatus: "wcNoiseFilter"
+         ScanAssByProducers: true
+         module_label: "wire"
+         module_type: "LiteScanner"
+         out_filename: "larlite_wire.root"
+         pot_labels: []
+         store_association: true
+         stream: "wire"
+         unique_filename: false
+      }
+   }
+   endpaths: [
+      "larcvsupera"
+   ]
+   larcvsupera: [
+      "superaInfill"
+   ]
+   producers: {
+      caldata: {
+         Deconvolution: {
+            Baseline: {
+               tool_type: "BaselineMostProbAve"
+            }
+            DodQdxCalib: false
+            FFTSize: 128
+            SaveWireWF: 0
+            dQdxCalibFileName: "dQdxCalibrationPlanev1.txt"
+            tool_type: "ROIDeconvolution"
+         }
+         DigitModuleLabel: "daq"
+         FFTSize: 128
+         MinAllowedChannelStatus: 3
+         NoiseSource: 3
+         ROIFinder: {
+            NumBinsHalf: 3
+            NumSigma: [
+               4,
+               4,
+               6
+            ]
+            Threshold: [
+               3,
+               3,
+               3
+            ]
+            tool_type: "ROIFinderStandard"
+            uPlaneROIPad: [
+               50,
+               50
+            ]
+            vPlaneROIPad: [
+               50,
+               50
+            ]
+            zPlaneROIPad: [
+               50,
+               50
+            ]
+         }
+         SaveWireWF: 0
+         module_label: "caldata"
+         module_type: "CalWireROI"
+      }
+      daq: {
+         CompressionType: "none"
+         DriftEModuleLabel: "largeant"
+         GenNoise: 3
+         GetNoiseFromHisto: false
+         LowCutoff: 7.5
+         MakeNoiseDists: true
+         NoiseFileFname: "uboone_noise_v0.1.root"
+         NoiseHistoName: "NoiseFreq"
+         NoiseRand: 1e-1
+         NoiseWidth: 6.24e1
+         Sample: -1
+         SimDeadChannels: true
+         Test: false
+         TestCharge: [
+            20000
+         ]
+         TestIndex: [
+            6400
+         ]
+         TestWire: 1200
+         TrigModName: "triggersim"
+         module_label: "daq"
+         module_type: "SimWireMicroBooNE"
+      }
+   }
+   simulate: [
+      "daq",
+      "caldata"
+   ]
+   stream1: [
+      "out1"
+   ]
+   trigger_paths: [
+      "simulate"
+   ]
+}
+process_name: "Infill"
+services: {
+   AuxDetExptGeoHelperInterface: {
+      service_provider: "CRTGeometryHelper"
+      service_type: "AuxDetExptGeoHelperInterface"
+   }
+   AuxDetGeometry: {
+      GDML: "microboonev11.gdml"
+      Name: "microboonev11"
+      ROOT: "microboonev11.gdml"
+      SortingParameters: {
+         NModules: 76
+         NStripsPerModule: 16
+      }
+      service_type: "AuxDetGeometry"
+   }
+   CatalogInterface: {
+      service_provider: "TrivialFileDelivery"
+      service_type: "CatalogInterface"
+   }
+   ChannelStatusService: {
+      CalibrationHelper: {
+         EventMixingModuleLabel: "retriever"
+      }
+      ChannelStatusProvider: {
+         DatabaseRetrievalAlg: {
+            AlgName: "DatabaseRetrievalAlg"
+            DBFolderName: "channelstatus_data"
+            DBTag: "v1r4"
+            DBUrl: "http://dbdata0vm.fnal.gov:8186/uboonecon_prod/app/"
+         }
+         UseDB: true
+         UseFile: false
+      }
+      FindNoisyChannels: false
+      service_provider: "UbooneChannelStatusService"
+      service_type: "ChannelStatusService"
+   }
+   DatabaseUtil: {
+      DBHostName: "fnalpgsdev.fnal.gov"
+      DBName: "uboone_dev"
+      DBUser: "uboone_reader"
+      PassFileName: ".upswd"
+      Port: 5436
+      ShouldConnect: false
+      TableName: "main_run"
+      ToughErrorTreatment: false
+      service_type: "DatabaseUtil"
+   }
+   DetPedestalService: {
+      CalibrationHelper: {
+         EventMixingModuleLabel: "retriever"
+      }
+      DetPedestalRetrievalAlg: {
+         DatabaseRetrievalAlg: {
+            AlgName: "DatabaseRetrievalAlg"
+            DBFolderName: "detpedestals_data"
+            DBTag: "v1r0"
+            DBUrl: "http://dbdata0vm.fnal.gov:8186/uboonecon_prod/app/"
+         }
+         DefaultCollMean: 473
+         DefaultCollRms: 3e-1
+         DefaultIndMean: 2046
+         DefaultIndRms: 3e-1
+         DefaultMeanErr: 0
+         DefaultRmsErr: 0
+         UseDB: true
+         UseFile: false
+      }
+      service_provider: "UbooneDetPedestalService"
+      service_type: "DetPedestalService"
+   }
+   DetectorClocksService: {
+      ClockSpeedExternal: 3.125e1
+      ClockSpeedOptical: 64
+      ClockSpeedTPC: 2
+      ClockSpeedTrigger: 16
+      DefaultBeamTime: 4050
+      DefaultTrigTime: 4050
+      FramePeriod: 1600
+      G4RefTime: -4050
+      InheritClockConfig: false
+      TrigModuleName: "triggersim"
+      TriggerOffsetTPC: -1600
+      service_provider: "DetectorClocksServiceStandard"
+      service_type: "DetectorClocksService"
+   }
+   DetectorPropertiesService: {
+      Efield: [
+         2.73e-1,
+         3.67e-1,
+         7.67e-1
+      ]
+      Electronlifetime: 999999
+      ElectronsToADC: 6.8906513e-3
+      InheritNumberTimeSamples: true
+      NumberTimeSamples: 9600
+      ReadOutWindowSize: 9600
+      SternheimerA: 1.956e-1
+      SternheimerCbar: 5.2146
+      SternheimerK: 3
+      SternheimerX0: 2e-1
+      SternheimerX1: 3
+      Temperature: 89
+      TimeOffsetU: 0
+      TimeOffsetV: 0
+      TimeOffsetZ: 0
+      service_provider: "DetectorPropertiesServiceStandard"
+      service_type: "DetectorPropertiesService"
+   }
+   ElectronicsCalibService: {
+      CalibrationHelper: {
+         EventMixingModuleLabel: "retriever"
+      }
+      ElectronicsCalibProvider: {
+         DatabaseRetrievalAlg: {
+            AlgName: "DatabaseRetrievalAlg"
+            DBFolderName: "electronicscalib_data"
+            DBTag: "v1r2"
+            DBUrl: "http://dbdata0vm.fnal.gov:8086/uboonecon_dev/app/"
+         }
+         DefaultGain: 14
+         DefaultGainErr: 0
+         DefaultShapingTime: 2
+         DefaultShapingTimeErr: 0
+         UseDB: true
+         UseFile: false
+      }
+      service_provider: "UbooneElectronicsCalibService"
+      service_type: "ElectronicsCalibService"
+   }
+   ExptGeoHelperInterface: {
+      OpDet0_channels: [
+         4,
+         104,
+         204,
+         304
+      ]
+      OpDet0_name: "P30"
+      OpDet10_channels: [
+         12,
+         112,
+         212,
+         312
+      ]
+      OpDet10_name: "P24"
+      OpDet11_channels: [
+         8,
+         108,
+         208,
+         308
+      ]
+      OpDet11_name: "P20"
+      OpDet12_channels: [
+         10,
+         110,
+         210,
+         310
+      ]
+      OpDet12_name: "P22"
+      OpDet13_channels: [
+         15,
+         115,
+         215,
+         315
+      ]
+      OpDet13_name: "P17"
+      OpDet14_channels: [
+         13,
+         113,
+         213,
+         313
+      ]
+      OpDet14_name: "P15"
+      OpDet15_channels: [
+         17,
+         117,
+         217,
+         317
+      ]
+      OpDet15_name: "P19"
+      OpDet16_channels: [
+         18,
+         118,
+         218,
+         318
+      ]
+      OpDet16_name: "P18"
+      OpDet17_channels: [
+         14,
+         114,
+         214,
+         314
+      ]
+      OpDet17_name: "P14"
+      OpDet18_channels: [
+         16,
+         116,
+         216,
+         316
+      ]
+      OpDet18_name: "P16"
+      OpDet19_channels: [
+         21,
+         121,
+         221,
+         321
+      ]
+      OpDet19_name: "P11"
+      OpDet1_channels: [
+         2,
+         102,
+         202,
+         302
+      ]
+      OpDet1_name: "P28"
+      OpDet20_channels: [
+         23,
+         123,
+         223,
+         323
+      ]
+      OpDet20_name: "P13"
+      OpDet21_channels: [
+         19,
+         119,
+         219,
+         319
+      ]
+      OpDet21_name: "P09"
+      OpDet22_channels: [
+         20,
+         120,
+         220,
+         320
+      ]
+      OpDet22_name: "P08"
+      OpDet23_channels: [
+         24,
+         124,
+         224,
+         324
+      ]
+      OpDet23_name: "P12"
+      OpDet24_channels: [
+         22,
+         122,
+         222,
+         322
+      ]
+      OpDet24_name: "P10"
+      OpDet25_channels: [
+         28,
+         128,
+         228,
+         328
+      ]
+      OpDet25_name: "P04"
+      OpDet26_channels: [
+         25,
+         125,
+         225,
+         325
+      ]
+      OpDet26_name: "P02"
+      OpDet27_channels: [
+         30,
+         130,
+         230,
+         330
+      ]
+      OpDet27_name: "P07"
+      OpDet28_channels: [
+         31,
+         131,
+         231,
+         331
+      ]
+      OpDet28_name: "P06"
+      OpDet29_channels: [
+         26,
+         126,
+         226,
+         326
+      ]
+      OpDet29_name: "P01"
+      OpDet2_channels: [
+         5,
+         105,
+         205,
+         305
+      ]
+      OpDet2_name: "P32"
+      OpDet30_channels: [
+         27,
+         127,
+         227,
+         327
+      ]
+      OpDet30_name: "P03"
+      OpDet31_channels: [
+         29,
+         129,
+         229,
+         329
+      ]
+      OpDet31_name: "P05"
+      OpDet32_channels: [
+         32,
+         132,
+         232,
+         332
+      ]
+      OpDet32_name: "L01"
+      OpDet33_channels: [
+         33,
+         133,
+         233,
+         333
+      ]
+      OpDet33_name: "L02"
+      OpDet34_channels: [
+         34,
+         134,
+         234,
+         334
+      ]
+      OpDet34_name: "L03"
+      OpDet35_channels: [
+         35,
+         135,
+         235,
+         335
+      ]
+      OpDet35_name: "L04"
+      OpDet3_channels: [
+         0,
+         100,
+         200,
+         300
+      ]
+      OpDet3_name: "P27"
+      OpDet4_channels: [
+         6,
+         106,
+         206,
+         306
+      ]
+      OpDet4_name: "P31"
+      OpDet5_channels: [
+         1,
+         101,
+         201,
+         301
+      ]
+      OpDet5_name: "P26"
+      OpDet6_channels: [
+         3,
+         103,
+         203,
+         303
+      ]
+      OpDet6_name: "P29"
+      OpDet7_channels: [
+         9,
+         109,
+         209,
+         309
+      ]
+      OpDet7_name: "P23"
+      OpDet8_channels: [
+         11,
+         111,
+         211,
+         311
+      ]
+      OpDet8_name: "P25"
+      OpDet9_channels: [
+         7,
+         107,
+         207,
+         307
+      ]
+      OpDet9_name: "P21"
+      numberOfDetectors: 36
+      numberOfHardwareChanels: 4
+      service_provider: "UBooNEGeometryHelper"
+      service_type: "ExptGeoHelperInterface"
+   }
+   FileCatalogMetadata: {
+      applicationFamily: "art"
+      applicationVersion: "development"
+      fileType: "mc"
+      group: "uboone"
+      runType: "physics"
+      service_type: "FileCatalogMetadata"
+   }
+   FileTransfer: {
+      service_provider: "TrivialFileTransfer"
+      service_type: "FileTransfer"
+   }
+   Geometry: {
+      DisableWiresInG4: true
+      GDML: "microboonev11.gdml"
+      Name: "microboonev11"
+      ROOT: "microboonev11.gdml"
+      SurfaceY: 690
+      service_type: "Geometry"
+   }
+   LArCVMetaMaker: {
+      Enable: false
+      service_type: "LArCVMetaMaker"
+   }
+   LArFFT: {
+      FFTOption: ""
+      FFTSize: 0
+      FitBins: 5
+      service_type: "LArFFT"
+   }
+   LArPropertiesService: {
+      AbsLengthEnergies: [
+         4,
+         5,
+         6,
+         7,
+         8,
+         9,
+         10,
+         11
+      ]
+      AbsLengthSpectrum: [
+         2000,
+         2000,
+         2000,
+         2000,
+         2000,
+         2000,
+         2000,
+         2000
+      ]
+      AlphaScintYield: 16800
+      AlphaScintYieldRatio: 5.6e-1
+      Argon39DecayRate: 0
+      AtomicMass: 3.9948e1
+      AtomicNumber: 18
+      ElectronScintYield: 20000
+      ElectronScintYieldRatio: 2.7e-1
+      EnableCerenkovLight: true
+      ExcitationEnergy: 188
+      FastScintEnergies: [
+         6,
+         6.7,
+         7.1,
+         7.4,
+         7.7,
+         7.9,
+         8.1,
+         8.4,
+         8.5,
+         8.6,
+         8.8,
+         9,
+         9.1,
+         9.4,
+         9.8,
+         1.04e1,
+         1.07e1
+      ]
+      FastScintSpectrum: [
+         0,
+         4e-2,
+         1.2e-1,
+         2.7e-1,
+         4.4e-1,
+         6.2e-1,
+         8e-1,
+         9.1e-1,
+         9.2e-1,
+         8.5e-1,
+         7e-1,
+         5e-1,
+         3.1e-1,
+         1.3e-1,
+         4e-2,
+         1e-2,
+         0
+      ]
+      KaonScintYield: 24000
+      KaonScintYieldRatio: 2.3e-1
+      MuonScintYield: 24000
+      MuonScintYieldRatio: 2.3e-1
+      PionScintYield: 24000
+      PionScintYieldRatio: 2.3e-1
+      ProtonScintYield: 19200
+      ProtonScintYieldRatio: 2.9e-1
+      RIndexEnergies: [
+         1.9,
+         2.934,
+         3.592,
+         5.566,
+         6.694,
+         7.54,
+         8.574,
+         9.044,
+         9.232,
+         9.42,
+         9.514,
+         9.608,
+         9.702,
+         9.796,
+         9.89,
+         9.984,
+         1.008e1,
+         1.027e1,
+         1.045e1,
+         1.074e1,
+         1.092e1
+      ]
+      RIndexSpectrum: [
+         1.232,
+         1.236,
+         1.24,
+         1.261,
+         1.282,
+         1.306,
+         1.353,
+         1.387,
+         1.404,
+         1.423,
+         1.434,
+         1.446,
+         1.459,
+         1.473,
+         1.488,
+         1.505,
+         1.524,
+         1.569,
+         1.627,
+         1.751,
+         1.879
+      ]
+      RadiationLength: 1.955e1
+      RayleighEnergies: [
+         2.8,
+         3,
+         3.5,
+         4,
+         5,
+         6,
+         7,
+         8,
+         8.5,
+         9,
+         9.2,
+         9.4,
+         9.5,
+         9.6,
+         9.7,
+         9.8,
+         9.9,
+         10,
+         1.02e1,
+         1.04e1,
+         1.06e1,
+         1.08e1
+      ]
+      RayleighSpectrum: [
+         47923,
+         35981,
+         18825,
+         10653,
+         3972,
+         1681,
+         7.509e2,
+         3.347e2,
+         2.168e2,
+         135,
+         1.097e2,
+         8.806e1,
+         7.832e1,
+         6.934e1,
+         6.106e1,
+         5.346e1,
+         4.65e1,
+         4.013e1,
+         2.891e1,
+         1.981e1,
+         1.261e1,
+         7.2
+      ]
+      ReflectiveSurfaceDiffuseFractions: [
+         [
+            5e-1,
+            5e-1,
+            5e-1
+         ]
+      ]
+      ReflectiveSurfaceEnergies: [
+         7,
+         9,
+         10
+      ]
+      ReflectiveSurfaceNames: [
+         "STEEL_STAINLESS_Fe7Cr2Ni"
+      ]
+      ReflectiveSurfaceReflectances: [
+         [
+            2.5e-1,
+            2.5e-1,
+            2.5e-1
+         ]
+      ]
+      ScintBirksConstant: 6.9e-2
+      ScintByParticleType: false
+      ScintFastTimeConst: 6
+      ScintPreScale: 9.3e-3
+      ScintResolutionScale: 1
+      ScintSlowTimeConst: 1590
+      ScintYield: 24000
+      ScintYieldRatio: 3e-1
+      SlowScintEnergies: [
+         6,
+         6.7,
+         7.1,
+         7.4,
+         7.7,
+         7.9,
+         8.1,
+         8.4,
+         8.5,
+         8.6,
+         8.8,
+         9,
+         9.1,
+         9.4,
+         9.8,
+         1.04e1,
+         1.07e1
+      ]
+      SlowScintSpectrum: [
+         0,
+         4e-2,
+         1.2e-1,
+         2.7e-1,
+         4.4e-1,
+         6.2e-1,
+         8e-1,
+         9.1e-1,
+         9.2e-1,
+         8.5e-1,
+         7e-1,
+         5e-1,
+         3.1e-1,
+         1.3e-1,
+         4e-2,
+         1e-2,
+         0
+      ]
+      service_provider: "LArPropertiesServiceStandard"
+      service_type: "LArPropertiesService"
+   }
+   LLMetaMaker: {
+      Enable: false
+      service_type: "LLMetaMaker"
+   }
+   MemoryTracker: {
+      dbOutput: {
+         filename: "mem.db"
+         overwrite: true
+      }
+      includeMallocInfo: true
+      printSummaries: [
+         "*"
+      ]
+      service_type: "MemoryTracker"
+   }
+   NuRandomService: {
+      endOfJobSummary: true
+      policy: "random"
+      service_type: "NuRandomService"
+   }
+   PmtGainService: {
+      CalibrationHelper: {
+         EventMixingModuleLabel: "retriever"
+      }
+      PmtGainProvider: {
+         DatabaseRetrievalAlg: {
+            AlgName: "DatabaseRetrievalAlg"
+            DBFolderName: "pmtgains_data"
+            DBTag: "v1r1"
+            DBUrl: "http://dbdata0vm.fnal.gov:8086/uboonecon_dev/app/"
+         }
+         DefaultGain: 20
+         DefaultGainErr: 2e-2
+         UseDB: true
+         UseFile: false
+      }
+      service_provider: "UboonePmtGainService"
+      service_type: "PmtGainService"
+   }
+   RandomNumberGenerator: {
+      service_type: "RandomNumberGenerator"
+   }
+   SignalShapingServiceMicroBooNE: {
+      ADCPerPCAtLowestASICGain: 9390
+      ASICGainInMVPerFC: [
+         [
+            14,
+            14,
+            14
+         ],
+         [
+            4.7,
+            14,
+            14
+         ]
+      ]
+      CalibResponseTOffset: [
+         0,
+         2,
+         0
+      ]
+      DeconNorm: 200
+      DeconvPol: [
+         -1,
+         1,
+         1
+      ]
+      DefaultDriftVelocity: [
+         -1,
+         -1,
+         -1
+      ]
+      DefaultEField: 2.73e-1
+      DefaultTemperature: 89
+      Drift3DCorrVec: [
+         1,
+         1,
+         1
+      ]
+      FieldRespAmpVec: [
+         5.55e-1,
+         4.47e-1,
+         1.46
+      ]
+      FieldResponseFNameBase: "uboone_response"
+      FieldResponseFVersion: [
+         "v3.11",
+         "v3.11"
+      ]
+      FieldResponseHNameBase: "FieldResponse"
+      FilterFuncVec: [
+         "(x>0.0)*gaus",
+         "(x>0.0)*gaus",
+         "(x>0.0)*gaus"
+      ]
+      FilterFuncVecICTime: [
+         "(x<=0.0)? 0.0: (gaus(0)+[5]*(x+0.005)+[6]*pow((x+0.005),[7]))*exp(-0.5*pow((x+0.005)/[3],[4]))",
+         "(x<=0.0)? 0.0: (gaus(0)+[5]*(x+0.005)+[6]*pow((x+0.005),[7]))*exp(-0.5*pow((x+0.005)/[3],[4]))",
+         "(x<=0.0)? 0.0: [0]*exp(-0.5*((((x+0.005)-[1])/[2])^2)^[4]) + 0*[3]"
+      ]
+      FilterFuncVecICWire: [
+         "(gaus(0)+[5]*x+[6]*pow(x,[7]))*exp(-0.5*pow(x/[3],[4]))",
+         "(gaus(0)+[5]*x+[6]*pow(x,[7]))*exp(-0.5*pow(x/[3],[4]))",
+         "(1.0-gaus(0))*[3]"
+      ]
+      FilterFunctionFname: "uboone_filters_v0.1.root"
+      FilterHistoName: "noisefilter_%d"
+      FilterNormVecIC: [
+         3.36273e3,
+         7.44734e3,
+         4.20288e3
+      ]
+      FilterParamsVec: [
+         [
+            1,
+            0,
+            1e-1
+         ],
+         [
+            1,
+            0,
+            1e-1
+         ],
+         [
+            1,
+            0,
+            1e-1
+         ]
+      ]
+      FilterParamsVecICTime: [
+         [
+            3.38e1,
+            3.62,
+            9.66,
+            2.2e-1,
+            4.17,
+            2.19e1,
+            -4.01e-1,
+            -7.84e-1
+         ],
+         [
+            9.96e1,
+            -1.22e1,
+            1.61e1,
+            2.67e-1,
+            5.63,
+            -5.78e1,
+            -1.51e1,
+            -2.95e-1
+         ],
+         [
+            3.98e1,
+            8.37e-2,
+            1.61e-1,
+            4e-1,
+            1.72
+         ]
+      ]
+      FilterParamsVecICWire: [
+         [
+            1.045e2,
+            -2.23,
+            5.75,
+            2.05e-1,
+            1.8,
+            2.873e2,
+            -4.11e-1,
+            6.41e-2
+         ],
+         [
+            1.961e2,
+            -9.39e-1,
+            4.14,
+            2.69e-1,
+            4.98,
+            -7.92e1,
+            2.42,
+            1.25
+         ],
+         [
+            8.97e-2,
+            1.54e-1,
+            -5.78e-2,
+            1.056e2
+         ]
+      ]
+      FilterScaleVecICTime: [
+         1,
+         1,
+         1
+      ]
+      FilterScaleVecICWire: [
+         2,
+         1.5,
+         1
+      ]
+      FilterWidthCorrectionFactor: [
+         1,
+         1,
+         1
+      ]
+      GetFilterFromHisto: false
+      IncludeMisconfiguredU: false
+      MisconfiguredU: [
+         [
+            2016,
+            2095
+         ],
+         [
+            2192,
+            2303
+         ],
+         [
+            2352,
+            2382
+         ]
+      ]
+      NActiveResponses: [
+         [
+            1,
+            1,
+            1
+         ],
+         [
+            1,
+            1,
+            1
+         ]
+      ]
+      NResponses: [
+         [
+            1,
+            1,
+            1
+         ],
+         [
+            1,
+            1,
+            1
+         ]
+      ]
+      NViews: 3
+      NYZActiveResponses: [
+         [
+            1,
+            2,
+            1
+         ],
+         [
+            1,
+            2,
+            1
+         ]
+      ]
+      NYZResponses: [
+         [
+            1,
+            2,
+            1
+         ],
+         [
+            1,
+            2,
+            1
+         ]
+      ]
+      NdatadrivenActiveResponses: [
+         [
+            3,
+            3,
+            2
+         ],
+         [
+            3,
+            3,
+            2
+         ]
+      ]
+      NdatadrivenResponses: [
+         [
+            3,
+            3,
+            2
+         ],
+         [
+            3,
+            3,
+            2
+         ]
+      ]
+      NoiseFactVec: [
+         [
+            1.12,
+            8.6e-1,
+            6e-1,
+            5.5e-1
+         ],
+         [
+            1.12,
+            8.6e-1,
+            6e-1,
+            5.5e-1
+         ],
+         [
+            8.9e-1,
+            6.6e-1,
+            4.8e-1,
+            4.3e-1
+         ]
+      ]
+      PrintResponses: false
+      ShapeTimeConst: [
+         [
+            2,
+            2,
+            2
+         ],
+         [
+            1,
+            2,
+            2
+         ]
+      ]
+      StretchFullResponse: false
+      TimeScaleParams: [
+         1,
+         8.06e-1
+      ]
+      UseCalibratedResponses: false
+      ViewForNormalization: 2
+      ViewIndex: [
+         0,
+         1,
+         2
+      ]
+      YZchargeScaling: [
+         [
+            1,
+            1,
+            1
+         ],
+         [
+            1,
+            1,
+            1
+         ],
+         [
+            1,
+            1,
+            1
+         ]
+      ]
+      YZdependentResponse: true
+      datadrivenResponse: true
+      service_type: "SignalShapingServiceMicroBooNE"
+   }
+   SpaceCharge: {
+      EnableCorrSCE: false
+      EnableSimEfieldSCE: false
+      EnableSimSpatialSCE: false
+      InputFilename: "SpaceCharge/SCEoffsets_MicroBooNE_E273.root"
+      RepresentationType: "Parametric"
+      service_provider: "SpaceChargeServiceMicroBooNE"
+      service_type: "SpaceCharge"
+   }
+   TFileService: {
+      fileName: "detsim_hist.root"
+      service_type: "TFileService"
+   }
+   TimeTracker: {
+      dbOutput: {
+         filename: "time.db"
+         overwrite: true
+      }
+      printSummary: true
+      service_type: "TimeTracker"
+   }
+   UBOpReadoutMap: {
+      OpMapLists: {
+         threeFEMOpMap: {
+            BNBLogicPulse: [
+               46
+            ]
+            NUMILogicPulse: [
+               47
+            ]
+            OpdetBeamHighGain: [
+               0,
+               1,
+               2,
+               3,
+               4,
+               5,
+               6,
+               7,
+               8,
+               9,
+               10,
+               11,
+               12,
+               13,
+               14,
+               15,
+               16,
+               17,
+               18,
+               19,
+               20,
+               21,
+               22,
+               23,
+               24,
+               25,
+               26,
+               27,
+               28,
+               29,
+               30,
+               31,
+               32,
+               33,
+               34,
+               35
+            ]
+            OpdetBeamLowGain: [
+               100,
+               101,
+               102,
+               103,
+               104,
+               105,
+               106,
+               107,
+               108,
+               109,
+               110,
+               111,
+               112,
+               113,
+               114,
+               115,
+               116,
+               117,
+               118,
+               119,
+               120,
+               121,
+               122,
+               123,
+               124,
+               125,
+               126,
+               127,
+               128,
+               129,
+               130,
+               131,
+               132,
+               132,
+               133,
+               134,
+               135
+            ]
+            OpdetCosmicHighGain: [
+               200,
+               201,
+               202,
+               203,
+               204,
+               205,
+               206,
+               207,
+               208,
+               209,
+               210,
+               211,
+               212,
+               213,
+               214,
+               215,
+               216,
+               217,
+               218,
+               219,
+               220,
+               221,
+               222,
+               223,
+               224,
+               225,
+               226,
+               227,
+               228,
+               229,
+               230,
+               231,
+               232,
+               232,
+               233,
+               234,
+               235
+            ]
+            OpdetCosmicLowGain: [
+               300,
+               301,
+               302,
+               303,
+               304,
+               305,
+               306,
+               307,
+               308,
+               309,
+               310,
+               311,
+               312,
+               313,
+               314,
+               315,
+               316,
+               317,
+               318,
+               319,
+               320,
+               321,
+               322,
+               323,
+               324,
+               325,
+               326,
+               327,
+               328,
+               329,
+               330,
+               331,
+               332,
+               332,
+               333,
+               334,
+               335
+            ]
+            ReadoutChannel0: [
+               10,
+               4,
+               0
+            ]
+            ReadoutChannel1: [
+               10,
+               4,
+               1
+            ]
+            ReadoutChannel10: [
+               10,
+               4,
+               10
+            ]
+            ReadoutChannel100: [
+               10,
+               5,
+               0
+            ]
+            ReadoutChannel101: [
+               10,
+               5,
+               1
+            ]
+            ReadoutChannel102: [
+               10,
+               5,
+               2
+            ]
+            ReadoutChannel103: [
+               10,
+               5,
+               3
+            ]
+            ReadoutChannel104: [
+               10,
+               5,
+               4
+            ]
+            ReadoutChannel105: [
+               10,
+               5,
+               5
+            ]
+            ReadoutChannel106: [
+               10,
+               5,
+               6
+            ]
+            ReadoutChannel107: [
+               10,
+               5,
+               7
+            ]
+            ReadoutChannel108: [
+               10,
+               5,
+               8
+            ]
+            ReadoutChannel109: [
+               10,
+               5,
+               9
+            ]
+            ReadoutChannel11: [
+               10,
+               4,
+               11
+            ]
+            ReadoutChannel110: [
+               10,
+               5,
+               10
+            ]
+            ReadoutChannel111: [
+               10,
+               5,
+               11
+            ]
+            ReadoutChannel112: [
+               10,
+               5,
+               12
+            ]
+            ReadoutChannel113: [
+               10,
+               5,
+               13
+            ]
+            ReadoutChannel114: [
+               10,
+               5,
+               14
+            ]
+            ReadoutChannel115: [
+               10,
+               5,
+               15
+            ]
+            ReadoutChannel116: [
+               10,
+               5,
+               16
+            ]
+            ReadoutChannel117: [
+               10,
+               5,
+               17
+            ]
+            ReadoutChannel118: [
+               10,
+               5,
+               18
+            ]
+            ReadoutChannel119: [
+               10,
+               5,
+               19
+            ]
+            ReadoutChannel12: [
+               10,
+               4,
+               12
+            ]
+            ReadoutChannel120: [
+               10,
+               5,
+               20
+            ]
+            ReadoutChannel121: [
+               10,
+               5,
+               21
+            ]
+            ReadoutChannel122: [
+               10,
+               5,
+               22
+            ]
+            ReadoutChannel123: [
+               10,
+               5,
+               23
+            ]
+            ReadoutChannel124: [
+               10,
+               5,
+               24
+            ]
+            ReadoutChannel125: [
+               10,
+               5,
+               25
+            ]
+            ReadoutChannel126: [
+               10,
+               5,
+               26
+            ]
+            ReadoutChannel127: [
+               10,
+               5,
+               27
+            ]
+            ReadoutChannel128: [
+               10,
+               5,
+               28
+            ]
+            ReadoutChannel129: [
+               10,
+               5,
+               29
+            ]
+            ReadoutChannel13: [
+               10,
+               4,
+               13
+            ]
+            ReadoutChannel130: [
+               10,
+               5,
+               30
+            ]
+            ReadoutChannel131: [
+               10,
+               5,
+               31
+            ]
+            ReadoutChannel132: [
+               10,
+               5,
+               32
+            ]
+            ReadoutChannel133: [
+               10,
+               5,
+               33
+            ]
+            ReadoutChannel134: [
+               10,
+               5,
+               34
+            ]
+            ReadoutChannel135: [
+               10,
+               5,
+               35
+            ]
+            ReadoutChannel136: [
+               10,
+               5,
+               36
+            ]
+            ReadoutChannel137: [
+               10,
+               5,
+               37
+            ]
+            ReadoutChannel138: [
+               10,
+               5,
+               38
+            ]
+            ReadoutChannel139: [
+               10,
+               5,
+               39
+            ]
+            ReadoutChannel14: [
+               10,
+               4,
+               14
+            ]
+            ReadoutChannel140: [
+               10,
+               5,
+               40
+            ]
+            ReadoutChannel141: [
+               10,
+               5,
+               41
+            ]
+            ReadoutChannel142: [
+               10,
+               5,
+               42
+            ]
+            ReadoutChannel143: [
+               10,
+               5,
+               43
+            ]
+            ReadoutChannel144: [
+               10,
+               5,
+               44
+            ]
+            ReadoutChannel145: [
+               10,
+               5,
+               45
+            ]
+            ReadoutChannel146: [
+               10,
+               5,
+               46
+            ]
+            ReadoutChannel147: [
+               10,
+               5,
+               47
+            ]
+            ReadoutChannel15: [
+               10,
+               4,
+               15
+            ]
+            ReadoutChannel16: [
+               10,
+               4,
+               16
+            ]
+            ReadoutChannel17: [
+               10,
+               4,
+               17
+            ]
+            ReadoutChannel18: [
+               10,
+               4,
+               18
+            ]
+            ReadoutChannel19: [
+               10,
+               4,
+               19
+            ]
+            ReadoutChannel2: [
+               10,
+               4,
+               2
+            ]
+            ReadoutChannel20: [
+               10,
+               4,
+               20
+            ]
+            ReadoutChannel200: [
+               10,
+               6,
+               0
+            ]
+            ReadoutChannel201: [
+               10,
+               6,
+               1
+            ]
+            ReadoutChannel202: [
+               10,
+               6,
+               2
+            ]
+            ReadoutChannel203: [
+               10,
+               6,
+               3
+            ]
+            ReadoutChannel204: [
+               10,
+               6,
+               4
+            ]
+            ReadoutChannel205: [
+               10,
+               6,
+               5
+            ]
+            ReadoutChannel206: [
+               10,
+               6,
+               6
+            ]
+            ReadoutChannel207: [
+               10,
+               6,
+               7
+            ]
+            ReadoutChannel208: [
+               10,
+               6,
+               8
+            ]
+            ReadoutChannel209: [
+               10,
+               6,
+               9
+            ]
+            ReadoutChannel21: [
+               10,
+               4,
+               21
+            ]
+            ReadoutChannel210: [
+               10,
+               6,
+               10
+            ]
+            ReadoutChannel211: [
+               10,
+               6,
+               11
+            ]
+            ReadoutChannel212: [
+               10,
+               6,
+               12
+            ]
+            ReadoutChannel213: [
+               10,
+               6,
+               13
+            ]
+            ReadoutChannel214: [
+               10,
+               6,
+               14
+            ]
+            ReadoutChannel215: [
+               10,
+               6,
+               15
+            ]
+            ReadoutChannel216: [
+               10,
+               6,
+               16
+            ]
+            ReadoutChannel217: [
+               10,
+               6,
+               17
+            ]
+            ReadoutChannel218: [
+               10,
+               6,
+               18
+            ]
+            ReadoutChannel219: [
+               10,
+               6,
+               19
+            ]
+            ReadoutChannel22: [
+               10,
+               4,
+               22
+            ]
+            ReadoutChannel220: [
+               10,
+               6,
+               20
+            ]
+            ReadoutChannel221: [
+               10,
+               6,
+               21
+            ]
+            ReadoutChannel222: [
+               10,
+               6,
+               22
+            ]
+            ReadoutChannel223: [
+               10,
+               6,
+               23
+            ]
+            ReadoutChannel224: [
+               10,
+               6,
+               24
+            ]
+            ReadoutChannel225: [
+               10,
+               6,
+               25
+            ]
+            ReadoutChannel226: [
+               10,
+               6,
+               26
+            ]
+            ReadoutChannel227: [
+               10,
+               6,
+               27
+            ]
+            ReadoutChannel228: [
+               10,
+               6,
+               28
+            ]
+            ReadoutChannel229: [
+               10,
+               6,
+               29
+            ]
+            ReadoutChannel23: [
+               10,
+               4,
+               23
+            ]
+            ReadoutChannel230: [
+               10,
+               6,
+               30
+            ]
+            ReadoutChannel231: [
+               10,
+               6,
+               31
+            ]
+            ReadoutChannel232: [
+               10,
+               6,
+               32
+            ]
+            ReadoutChannel233: [
+               10,
+               6,
+               33
+            ]
+            ReadoutChannel234: [
+               10,
+               6,
+               34
+            ]
+            ReadoutChannel235: [
+               10,
+               6,
+               35
+            ]
+            ReadoutChannel236: [
+               10,
+               6,
+               36
+            ]
+            ReadoutChannel237: [
+               10,
+               6,
+               37
+            ]
+            ReadoutChannel238: [
+               10,
+               6,
+               38
+            ]
+            ReadoutChannel239: [
+               10,
+               6,
+               39
+            ]
+            ReadoutChannel24: [
+               10,
+               4,
+               24
+            ]
+            ReadoutChannel240: [
+               10,
+               6,
+               40
+            ]
+            ReadoutChannel241: [
+               10,
+               6,
+               41
+            ]
+            ReadoutChannel242: [
+               10,
+               6,
+               42
+            ]
+            ReadoutChannel243: [
+               10,
+               6,
+               43
+            ]
+            ReadoutChannel244: [
+               10,
+               6,
+               44
+            ]
+            ReadoutChannel245: [
+               10,
+               6,
+               45
+            ]
+            ReadoutChannel246: [
+               10,
+               6,
+               46
+            ]
+            ReadoutChannel247: [
+               10,
+               6,
+               47
+            ]
+            ReadoutChannel25: [
+               10,
+               4,
+               25
+            ]
+            ReadoutChannel26: [
+               10,
+               4,
+               26
+            ]
+            ReadoutChannel27: [
+               10,
+               4,
+               27
+            ]
+            ReadoutChannel28: [
+               10,
+               4,
+               28
+            ]
+            ReadoutChannel29: [
+               10,
+               4,
+               29
+            ]
+            ReadoutChannel3: [
+               10,
+               4,
+               3
+            ]
+            ReadoutChannel30: [
+               10,
+               4,
+               30
+            ]
+            ReadoutChannel300: [
+               10,
+               7,
+               0
+            ]
+            ReadoutChannel301: [
+               10,
+               7,
+               1
+            ]
+            ReadoutChannel302: [
+               10,
+               7,
+               2
+            ]
+            ReadoutChannel303: [
+               10,
+               7,
+               3
+            ]
+            ReadoutChannel304: [
+               10,
+               7,
+               4
+            ]
+            ReadoutChannel305: [
+               10,
+               7,
+               5
+            ]
+            ReadoutChannel306: [
+               10,
+               7,
+               6
+            ]
+            ReadoutChannel307: [
+               10,
+               7,
+               7
+            ]
+            ReadoutChannel308: [
+               10,
+               7,
+               8
+            ]
+            ReadoutChannel309: [
+               10,
+               7,
+               9
+            ]
+            ReadoutChannel31: [
+               10,
+               4,
+               31
+            ]
+            ReadoutChannel310: [
+               10,
+               7,
+               10
+            ]
+            ReadoutChannel311: [
+               10,
+               7,
+               11
+            ]
+            ReadoutChannel312: [
+               10,
+               7,
+               12
+            ]
+            ReadoutChannel313: [
+               10,
+               7,
+               13
+            ]
+            ReadoutChannel314: [
+               10,
+               7,
+               14
+            ]
+            ReadoutChannel315: [
+               10,
+               7,
+               15
+            ]
+            ReadoutChannel316: [
+               10,
+               7,
+               16
+            ]
+            ReadoutChannel317: [
+               10,
+               7,
+               17
+            ]
+            ReadoutChannel318: [
+               10,
+               7,
+               18
+            ]
+            ReadoutChannel319: [
+               10,
+               7,
+               19
+            ]
+            ReadoutChannel32: [
+               10,
+               4,
+               32
+            ]
+            ReadoutChannel320: [
+               10,
+               7,
+               20
+            ]
+            ReadoutChannel321: [
+               10,
+               7,
+               21
+            ]
+            ReadoutChannel322: [
+               10,
+               7,
+               22
+            ]
+            ReadoutChannel323: [
+               10,
+               7,
+               23
+            ]
+            ReadoutChannel324: [
+               10,
+               7,
+               24
+            ]
+            ReadoutChannel325: [
+               10,
+               7,
+               25
+            ]
+            ReadoutChannel326: [
+               10,
+               7,
+               26
+            ]
+            ReadoutChannel327: [
+               10,
+               7,
+               27
+            ]
+            ReadoutChannel328: [
+               10,
+               7,
+               28
+            ]
+            ReadoutChannel329: [
+               10,
+               7,
+               29
+            ]
+            ReadoutChannel33: [
+               10,
+               4,
+               33
+            ]
+            ReadoutChannel330: [
+               10,
+               7,
+               30
+            ]
+            ReadoutChannel331: [
+               10,
+               7,
+               31
+            ]
+            ReadoutChannel332: [
+               10,
+               7,
+               32
+            ]
+            ReadoutChannel333: [
+               10,
+               7,
+               33
+            ]
+            ReadoutChannel334: [
+               10,
+               7,
+               34
+            ]
+            ReadoutChannel335: [
+               10,
+               7,
+               35
+            ]
+            ReadoutChannel336: [
+               10,
+               7,
+               36
+            ]
+            ReadoutChannel337: [
+               10,
+               7,
+               37
+            ]
+            ReadoutChannel338: [
+               10,
+               7,
+               38
+            ]
+            ReadoutChannel339: [
+               10,
+               7,
+               39
+            ]
+            ReadoutChannel34: [
+               10,
+               4,
+               34
+            ]
+            ReadoutChannel340: [
+               10,
+               7,
+               40
+            ]
+            ReadoutChannel341: [
+               10,
+               7,
+               41
+            ]
+            ReadoutChannel342: [
+               10,
+               7,
+               42
+            ]
+            ReadoutChannel343: [
+               10,
+               7,
+               43
+            ]
+            ReadoutChannel344: [
+               10,
+               7,
+               44
+            ]
+            ReadoutChannel345: [
+               10,
+               7,
+               45
+            ]
+            ReadoutChannel346: [
+               10,
+               7,
+               46
+            ]
+            ReadoutChannel347: [
+               10,
+               7,
+               47
+            ]
+            ReadoutChannel35: [
+               10,
+               4,
+               35
+            ]
+            ReadoutChannel36: [
+               10,
+               4,
+               36
+            ]
+            ReadoutChannel37: [
+               10,
+               4,
+               37
+            ]
+            ReadoutChannel38: [
+               10,
+               4,
+               38
+            ]
+            ReadoutChannel39: [
+               10,
+               4,
+               39
+            ]
+            ReadoutChannel4: [
+               10,
+               4,
+               4
+            ]
+            ReadoutChannel40: [
+               10,
+               4,
+               40
+            ]
+            ReadoutChannel41: [
+               10,
+               4,
+               41
+            ]
+            ReadoutChannel42: [
+               10,
+               4,
+               42
+            ]
+            ReadoutChannel43: [
+               10,
+               4,
+               43
+            ]
+            ReadoutChannel44: [
+               10,
+               4,
+               44
+            ]
+            ReadoutChannel45: [
+               10,
+               4,
+               45
+            ]
+            ReadoutChannel46: [
+               10,
+               4,
+               46
+            ]
+            ReadoutChannel47: [
+               10,
+               4,
+               47
+            ]
+            ReadoutChannel5: [
+               10,
+               4,
+               5
+            ]
+            ReadoutChannel6: [
+               10,
+               4,
+               6
+            ]
+            ReadoutChannel7: [
+               10,
+               4,
+               7
+            ]
+            ReadoutChannel8: [
+               10,
+               4,
+               8
+            ]
+            ReadoutChannel9: [
+               10,
+               4,
+               9
+            ]
+            TriggerFEMSlot: 4
+            UnspecifiedLogic: [
+               36,
+               37,
+               38,
+               39,
+               40,
+               41,
+               42,
+               43,
+               44,
+               45,
+               136,
+               137,
+               138,
+               139,
+               140,
+               141,
+               142,
+               143,
+               144,
+               145,
+               146,
+               147
+            ]
+         }
+      }
+      OpMapRunRanges: {
+         threeFEMOpMap: [
+            1,
+            999999
+         ]
+      }
+      OpMapTimeRanges: {
+         threeFEMOpMap: [
+            "1970-01-01 00:00:00 CST",
+            "3000-01-01 23:59:59 CST"
+         ]
+      }
+      Verbose: false
+      service_type: "UBOpReadoutMap"
+   }
+   UBOpticalChConfig: {
+      ChannelList: [
+         0,
+         1,
+         2,
+         3,
+         4,
+         5,
+         6,
+         7,
+         8,
+         9,
+         10,
+         11,
+         12,
+         13,
+         14,
+         15,
+         16,
+         17,
+         18,
+         19,
+         20,
+         21,
+         22,
+         23,
+         24,
+         25,
+         26,
+         27,
+         28,
+         29,
+         30,
+         31,
+         32,
+         33,
+         34,
+         35,
+         36,
+         37,
+         38,
+         39,
+         40,
+         41,
+         42,
+         43,
+         44,
+         45,
+         46,
+         47,
+         100,
+         101,
+         102,
+         103,
+         104,
+         105,
+         106,
+         107,
+         108,
+         109,
+         110,
+         111,
+         112,
+         113,
+         114,
+         115,
+         116,
+         117,
+         118,
+         119,
+         120,
+         121,
+         122,
+         123,
+         124,
+         125,
+         126,
+         127,
+         128,
+         129,
+         130,
+         131,
+         132,
+         133,
+         134,
+         135,
+         136,
+         137,
+         138,
+         139,
+         140,
+         141,
+         142,
+         143,
+         144,
+         145,
+         146,
+         147,
+         200,
+         201,
+         202,
+         203,
+         204,
+         205,
+         206,
+         207,
+         208,
+         209,
+         210,
+         211,
+         212,
+         213,
+         214,
+         215,
+         216,
+         217,
+         218,
+         219,
+         220,
+         221,
+         222,
+         223,
+         224,
+         225,
+         226,
+         227,
+         228,
+         229,
+         230,
+         231,
+         232,
+         233,
+         234,
+         235,
+         300,
+         301,
+         302,
+         303,
+         304,
+         305,
+         306,
+         307,
+         308,
+         309,
+         310,
+         311,
+         312,
+         313,
+         314,
+         315,
+         316,
+         317,
+         318,
+         319,
+         320,
+         321,
+         322,
+         323,
+         324,
+         325,
+         326,
+         327,
+         328,
+         329,
+         330,
+         331,
+         332,
+         333,
+         334,
+         335
+      ]
+      DarkRate: [
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1,
+         2.5e-1
+      ]
+      Disc0Threshold: [
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2
+      ]
+      Disc1Threshold: [
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4
+      ]
+      Disc3Threshold: [
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2,
+         2
+      ]
+      GainSpread: [
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2,
+         5e-2
+      ]
+      PMTGain: [
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         30,
+         30,
+         30,
+         30,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         120,
+         30,
+         30,
+         30,
+         30,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         3,
+         3,
+         3,
+         3
+      ]
+      PedestalMean: [
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048,
+         2048
+      ]
+      PedestalSpread: [
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1,
+         3e-1
+      ]
+      QE: [
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3,
+         9.3e-3
+      ]
+      SplitterGain: [
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20,
+         20
+      ]
+      T0: [
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+      ]
+      T0Spread: [
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+      ]
+      service_type: "UBOpticalChConfig"
+   }
+   message: {
+      destinations: {
+         STDOUT: {
+            categories: {
+               ArtReport: {
+                  limit: 100
+               }
+               default: {
+                  limit: -1
+               }
+            }
+            threshold: "INFO"
+            type: "cout"
+         }
+      }
+   }
+   scheduler: {
+      defaultExceptions: false
+      errorOnFailureToPut: true
+      errorOnSIGINT: true
+   }
+}
+source: {
+   fileNames: [
+      "/uboone/data/users/tmw/dl_test_files/test_bnbcosmics_mcc8.4.root"
+   ]
+   inputCommands: [
+      "keep *_*_*_*",
+      "drop *_*_*_Detsim*",
+      "drop *_*_*_McReco*"
+   ]
+   maxEvents: 1
+   module_label: "source"
+   module_type: "RootInput"
+   saveMemoryObjectThreshold: 0
+}
+trigger_paths: {
+   trigger_paths: [
+      "simulate"
+   ]
+}
